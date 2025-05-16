@@ -18,7 +18,7 @@ This project predicts car prices using machine learning (XGBoost) and offers a s
 ## 🏁 How to Run
 
 1. Clone the repository  
-   `git clone https://github.com/your-username/car-price-prediction.git`
+   `git@github.com:mohamed-makrani/Car-price-prediction.git`
 
 2. Run the app  
    `python app.py`
