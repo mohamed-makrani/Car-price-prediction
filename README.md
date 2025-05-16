@@ -34,7 +34,7 @@ ML-Project-Price-Detection/
 ├── cleaning_model/                  # Scripts and saved models from training
 │   ├── Model.ipynb
 │   ├── model_rf.joblib
-│   ├── model_xgb.joblib
+│   └── model_xgb.joblib
 │
 ├── dataset/                         # CSV datasets used for training/testing
 │   ├── avito_voitures 18.csv
@@ -57,7 +57,8 @@ ML-Project-Price-Detection/
 │   ├── scrap.ipynb
 │   └── last_scraped_page.txt
 │
-└── README.md                        # (project overview)
+└── README.md                        # Project overview and instructions
+
 
 
 
