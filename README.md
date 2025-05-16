@@ -73,6 +73,7 @@ ML-Project-Price-Detection/
 
 │ └── last_scraped_page.txt
 │
+
 └── README.md # Project overview and instructions
 
 
