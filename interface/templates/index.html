@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estimation du prix de voiture</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="icon" href="https://img.icons8.com/ios-filled/50/ffffff/car--v1.png" type="image/x-icon">
+
+  <style>
+    html{
+      overflow-x: hidden;
+    }
+    body {
+      background: linear-gradient(to bottom, #a0c4ff, #cdeaff);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h2 {
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    form {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select {
+      border-radius: 10px;
+    }
+
+    button {
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-weight: bold;
+    }
+
+    .icon {
+      margin-right: 8px;
+      color: #007bff;
+    }
+
+    /* Résultat de prédiction stylisé */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.43);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      min-width: 300px;
+      max-width: 500px;
+      animation: slideUp 0.8s ease-in-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .shiny-text strong {
+      font-size: 2.5em;
+      color: #00ffae;
+      background: linear-gradient(90deg, #00ffae, #0099ff, #00ffae);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+    }
+
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    html{
+        scroll-behavior: smooth;
+    }
+
+    #getStartedBtn{
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        height:80px;
+        min-width: 300px;
+        max-width: 500px;
+        animation: slideUp 0.8s ease-in-out;
+        font-size: 2.5em;
+        color: #00ffae;
+        background: linear-gradient(90deg, #00ffae, #0099ff, #00ffae);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 3s linear infinite;
+    }
+
+    #resettedBtn{
+        min-width: 200px;
+        max-width: 500px;
+        animation: slideUp 0.8s ease-in-out;
+        font-size: 1.3em;
+        color: #00ffae;
+        background: linear-gradient(90deg, #00ffae, #0099ff, #00ffae);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 3s linear infinite;
+    }
+
+    .icon-input{
+        animation: slideUp 0.8s ease-in-out;
+        color: #00ffae;
+        background: linear-gradient(90deg, #00ffae, #0099ff, #00ffae);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 3s linear infinite;
+    }
+
+    .predicter{
+        animation: slideUp 0.8s ease-in-out;
+        background-color:#00ffae;
+        background: linear-gradient(90deg, #00ffae, #0099ff, #00ffae);
+        background-size: 300% 100%;
+        -webkit-text-fill-color: white;
+        animation: shine 3s linear infinite;
+        border:none;
+    }
+
+    .video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    #bg-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        color: white;
+        padding: 50px;
+      }
+    
+      
+  </style>
+
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent px-4 py-3 animate__animated animate__fadeInDown">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold text-white fs-4" href="http://127.0.0.1:5000/">
+            <i class="fas fa-car-side me-2"></i>AutoEstimator
+          </a>
+          <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item me-5">
+                <a class="nav-link text-white" href="http://127.0.0.1:5000/"><i class="fas fa-home me-1"></i>Accueil</a>
+              </li>
+              <li class="nav-item me-5">
+                <a class="nav-link text-white" href="#car-form"><i class="fas fa-calculator me-1"></i>Estimation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="#about-contact"><i class="fas fa-info-circle me-1"></i>À propos</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="video-background">
+        <video autoplay muted loop id="bg-video">
+          <source src="../static/video/car.mp4" type="video/mp4">
+          Ton navigateur ne supporte pas la vidéo.
+        </video>
+    </div>
+
+    {% if price is not none %}
+        <div id="prediction-result" class="d-flex justify-content-center mt-5">
+            <div class="glass-card text-center p-4">
+            <div class="fs-1 text-success mb-3">
+                <i class="fas fa-sack-dollar fa-bounce"></i>
+            </div>
+            <h4 class="mb-3 text-dark">Prix estimé de votre voiture</h4>
+            <div class="shiny-text">
+                💰 <strong>{{ price }} MAD</strong>
+                <a href="#hero" class="btn btn-lg animate__animated animate__fadeInDown " id="resettedBtn">
+                    <i class="fas fa-play me-2"></i>Reset
+                </a>
+            </div>
+            </div>
+        </div>
+    {% endif %}  
+
+    <section id="hero" class="d-flex justify-content-center align-items-center" style="height: 100vh; "> 
+        <a href="#cars-prediction" class="btn btn-lg shadow animate__animated animate__fadeInDown " id="getStartedBtn">
+          <i class="fas fa-play me-2"></i>Get Started
+        </a>
+    </section>
+      
+
+    <div class="container mt-5 cars-prediction" id="car-form">
+        <h2 class="text-center mb-4 animate__animated animate__fadeInDown">
+            🚗 Estimation du prix de votre voiture
+        </h2>
+
+        <form id="" method="POST" class="row g-3 animate__animated animate__fadeInUp">
+            <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-car icon icon-input"></i>Marque</label>
+            <select class="form-select" name="Marque" required>
+                    <option value="Audi">Audi</option>
+                    <option value="Citroen">Citroën</option>
+                    <option value="Dacia">Dacia</option>
+                    <option value="Fiat">Fiat</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Hyundai">Hyundai</option>
+                    <option value="Jeep">Jeep</option>
+                    <option value="Nissan">Nissan</option>
+                    <option value="Peugeot">Peugeot</option>
+                    <option value="Porsche">Porsche</option>
+                    <option value="Renault">Renault</option>
+                    <option value="Skoda">Skoda</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Volkswagen">Volkswagen</option>
+            </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-cogs icon icon-input"></i>Modèle</label>
+                <div class="col-md-12">
+                    <select class="form-select" name="Module" required>
+                        <option value="2008">2008</option>
+                        <option value="208">208</option>
+                        <option value="3008">3008</option>
+                        <option value="308">308</option>
+                        <option value="500">500</option>
+                        <option value="5008">5008</option>
+                        <option value="500x">500X</option>
+                        <option value="911">911</option>
+                        <option value="A1">A1</option>
+                        <option value="A3">A3</option>
+                        <option value="A4">A4</option>
+                        <option value="A5">A5</option>
+                        <option value="A6">A6</option>
+                        <option value="A7">A7</option>
+                        <option value="Almera">Almera</option>
+                        <option value="Altima">Altima</option>
+                        <option value="Ariya">Ariya</option>
+                        <option value="Arteon">Arteon</option>
+                        <option value="Auris">Auris</option>
+                        <option value="Berlingo">Berlingo</option>
+                        <option value="Boxster">Boxster</option>
+                        <option value="C1">C1</option>
+                        <option value="C3">C3</option>
+                        <option value="C4">C4</option>
+                        <option value="C5">C5</option>
+                        <option value="Camry">Camry</option>
+                        <option value="Captur">Captur</option>
+                        <option value="Cayenne">Cayenne</option>
+                        <option value="Cherokee">Cherokee</option>
+                        <option value="CLA">CLA</option>
+                        <option value="Clio">Clio</option>
+                        <option value="Compass">Compass</option>
+                        <option value="Corolla">Corolla</option>
+                        <option value="Defender">Defender</option>
+                        <option value="Discovery">Discovery</option>
+                        <option value="Doblo">Doblo</option>
+                        <option value="Duster">Duster</option>
+                        <option value="EcoSport">EcoSport</option>
+                        <option value="Elantra">Elantra</option>
+                        <option value="Evoque">Evoque</option>
+                        <option value="Expert">Expert</option>
+                        <option value="Fabia">Fabia</option>
+                        <option value="Fiesta">Fiesta</option>
+                        <option value="Focus">Focus</option>
+                        <option value="Freelander">Freelander</option>
+                        <option value="Galaxy">Galaxy</option>
+                        <option value="Gclass">G-Class</option>
+                        <option value="Glc">GLC</option>
+                        <option value="Gle">GLE</option>
+                        <option value="Golf">Golf</option>
+                        <option value="Hilux">Hilux</option>
+                        <option value="i10">i10</option>
+                        <option value="i20">i20</option>
+                        <option value="i30">i30</option>
+                        <option value="Jetta">Jetta</option>
+                        <option value="Juke">Juke</option>
+                        <option value="Kadjar">Kadjar</option>
+                        <option value="Karoq">Karoq</option>
+                        <option value="Kodiaq">Kodiaq</option>
+                        <option value="Koleos">Koleos</option>
+                        <option value="Kona">Kona</option>
+                        <option value="Kuga">Kuga</option>
+                        <option value="Landcruiser">Land Cruiser</option>
+                        <option value="Leaf">Leaf</option>
+                        <option value="Logan">Logan</option>
+                        <option value="Lodgy">Lodgy</option>
+                        <option value="Macan">Macan</option>
+                        <option value="Megane">Mégane</option>
+                        <option value="Micra">Micra</option>
+                        <option value="Mondeo">Mondeo</option>
+                        <option value="Murano">Murano</option>
+                        <option value="Mustang">Mustang</option>
+                        <option value="Navara">Navara</option>
+                        <option value="Nexo">Nexo</option>
+                        <option value="Note">Note</option>
+                        <option value="Octavia">Octavia</option>
+                        <option value="Panamera">Panamera</option>
+                        <option value="Panda">Panda</option>
+                        <option value="Partner">Partner</option>
+                        <option value="Passat">Passat</option>
+                        <option value="Pathfinder">Pathfinder</option>
+                        <option value="Patrol">Patrol</option>
+                        <option value="Polo">Polo</option>
+                        <option value="Primera">Primera</option>
+                        <option value="Prius">Prius</option>
+                        <option value="Q3">Q3</option>
+                        <option value="Q5">Q5</option>
+                        <option value="Q7">Q7</option>
+                        <option value="Qashqai">Qashqai</option>
+                        <option value="Rapid">Rapid</option>
+                        <option value="Rangerover">Range Rover</option>
+                        <option value="Rav4">RAV4</option>
+                        <option value="Renegade">Renegade</option>
+                        <option value="Rogue">Rogue</option>
+                        <option value="Sandero">Sandero</option>
+                        <option value="SantaFe">Santa Fe</option>
+                        <option value="Scenic">Scénic</option>
+                        <option value="Sentra">Sentra</option>
+                        <option value="Serie1">Série 1</option>
+                        <option value="Serie3">Série 3</option>
+                        <option value="Serie5">Série 5</option>
+                        <option value="Serie7">Série 7</option>
+                        <option value="Serie8">Série 8</option>
+                        <option value="Skyline">Skyline</option>
+                        <option value="Smax">S-Max</option>
+                        <option value="Spring">Spring</option>
+                        <option value="Superb">Superb</option>
+                        <option value="Talisman">Talisman</option>
+                        <option value="Taycan">Taycan</option>
+                        <option value="Terra">Terra</option>
+                        <option value="Tiguan">Tiguan</option>
+                        <option value="Titan">Titan</option>
+                        <option value="Tipo">Tipo</option>
+                        <option value="Touran">Touran</option>
+                        <option value="Tucson">Tucson</option>
+                        <option value="Up">Up!</option>
+                        <option value="Versa">Versa</option>
+                        <option value="Wrangler">Wrangler</option>
+                        <option value="X1">X1</option>
+                        <option value="X3">X3</option>
+                        <option value="X5">X5</option>
+                        <option value="Yaris">Yaris</option>
+                        <option value="Zoe">Zoe</option>            
+                    </select>
+                </div>      
+
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-road icon icon-input"></i>Kilométrage</label>
+                <input type="number" class="form-control" name="Kilomtrage" placeholder="ex: 95000" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-calendar-alt icon icon-input"></i>Année</label>
+                <input type="number" class="form-control" name="Annee" placeholder="ex: 2018" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-gauge icon icon-input"></i>Puissance fiscale</label>
+                <input type="number" class="form-control" name="Puissance_fiscale" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-cog icon icon-input"></i>Boîte de vitesse</label>
+                <select class="form-select" name="Auto_manuel" required>
+                    <option value="Automatique">Automatique</option>
+                    <option value="Manuelle">Manuelle</option>
+            </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-gas-pump icon icon-input"></i>Carburant</label>
+                <select class="form-select" name="Carburant" required>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Essence">Essence</option>
+                    <option value="Hybride">Hybride</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-door-closed icon icon-input"></i>Nombre de portes</label>
+                <input type="number" class="form-control" name="Nombre_de_portes" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label"><i class="fas fa-star icon icon-input"></i>État</label>
+                <select class="form-select" name="Eat" required>
+                    <option value="Excellent">Bon</option>
+                    <option value="Bon">Excellent</option>
+                </select>
+            </div>
+
+            <div class="col-12 text-center mt-4" >
+                <button type="submit" class="btn btn-primary predicter"><b><i class="fas fa-calculator"></i> Prédire le prix</b></button>
+            </div>
+        </form>
+    
+    </div>
+
+    <section id="about-contact" class="py-5 text-white" style="background-color: rgba(0, 0, 0, 0.8);">
+      <div class="container">
+        <h2 class="text-center mb-5 animate__animated animate__fadeInDown">À propos & Contact</h2>
+        <div class="row align-items-stretch">
+          
+          <!-- À propos -->
+          <div class="col-md-6 mb-4 animate__animated animate__fadeInLeft">
+            <div class="p-4 rounded-4 shadow-lg" style="backdrop-filter: blur(8px); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <h4 class="mb-3"><i class="fas fa-brain me-2"></i>Qui sommes-nous ?</h4>
+              <p class="text-white-50">
+                Nous sommes une équipe de chercheurs et développeurs passionnés par l’intelligence artificielle.
+              </p>
+              <p class="text-white-50">
+                Découvrez notre plateforme intelligente de prédiction des prix des voitures, basée sur des modèles d'apprentissage automatique performants.
+              </p>
+              <p class="text-white-50 mb-0">
+                Notre objectif est de rendre la prédiction des prix automobiles plus précise, accessible et utile pour tous.
+              </p>
+            </div>
+          </div>
+    
+          <!-- Contact statique -->
+          <div class="col-md-6 animate__animated animate__fadeInRight">
+            <div class="p-4 rounded-4 shadow-lg" style="backdrop-filter: blur(8px); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <h4 class="mb-3"><i class="fas fa-envelope me-2"></i>Contactez-nous</h4>
+              <ul class="list-unstyled text-white-50">
+                <li class="mb-2"><i class="fas fa-user me-2"></i>Nom : Mohammed HMIMID / Mohamed MAKRANI</li>
+                <li class="mb-2"><i class="fas fa-university me-2"></i>Université : FS Ben M’Sick</li>
+                <li class="mb-2"><i class="fas fa-envelope me-2"></i>Email : makrani.mohamed@ump.ac.ma / mohammedhmimid05@gmail.com</li>
+                <li class="mb-2"><i class="fas fa-phone me-2"></i>Téléphone : +212 6 95 43 92 65 / +212 6 21 52 48 31</li>
+                <li><i class="fas fa-map-marker-alt me-2"></i>Adresse : Casablanca, Maroc</li>
+              </ul>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+    
+        
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        document.getElementById("getStartedBtn").addEventListener("click", function () {
+        const formSection = document.getElementById("car-form");
+        if (formSection) {
+            formSection.scrollIntoView({ behavior: "smooth" });
+        }
+        });
+    </script>
+
+</body>
+</html>
