@@ -24,13 +24,16 @@ This project predicts car prices using machine learning (XGBoost) and offers a s
    `python app.py`
 
 ## 📸 Screenshot
- - Home 
+ - Home
+   
   ![1](https://github.com/user-attachments/assets/7eeb804b-9e1d-49c0-bbd8-c9ce6f6ae0a1)
 
  - Estimation
+   
    ![2](https://github.com/user-attachments/assets/6b7f06d1-393d-4a20-99aa-96462ee02fe2)
 
  - Contact
+   
    ![3](https://github.com/user-attachments/assets/9c5b44ec-1f9c-46b3-bbe8-d681e5b2a750)
 
 
